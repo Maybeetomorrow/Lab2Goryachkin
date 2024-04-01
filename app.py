@@ -6,6 +6,7 @@ import bottle
 import os
 import sys
 import routes
+import myform 
 
 if '--debug' in sys.argv[1:] or 'SERVER_DEBUG' in os.environ:
 
@@ -32,5 +33,4 @@ if __name__ == '__main__':
         the server should be configured to serve the static files."""
         return bottle.static_file(filepath, root=STATIC_ROOT)
 
-    # Starts a local test server.
     bottle.run(server='wsgiref', host=HOST, port=PORT)
