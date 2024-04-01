@@ -1,6 +1,6 @@
 from bottle import post, request
 import re
-from datetime import datetime
+from datetime import datetime, date
 
 # Паттерн для проверки адреса электронной почты
 email_pattern = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
@@ -24,12 +24,18 @@ def my_form():
     # Проверяем введенную дату
     try:
         # Преобразуем строку даты в объект datetime
-        date = datetime.strptime(date_str, "%Y-%m-%d")
+        date = datetime.strptime(date_str, "%Y-%m-%d").date()
         # Получаем текущую дату
-        current_date = datetime.now().date()
+        current_date = date.today()
+        # Получаем год из введенной даты
+        year = date.year
         # Проверяем, что введенная дата не больше текущей даты
         if date > current_date:
             return "Date cannot be greater than current date."
+        # Проверяем, что год не меньше заданного минимального значения
+        min_year = 2000
+        if year < min_year:
+            return "Year cannot be less than %d." % min_year
     except ValueError:
         return "Invalid date format. Please enter date in YYYY-MM-DD format."
 
