@@ -12,8 +12,7 @@
         <h2>Getting started</h2>
         <p>
             Bottle gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
+            enables a clean separation of concerns.
         </p>
         <p><a class="btn btn-default" href="http://bottlepy.org/docs/dev/index.html">Learn more &raquo;</a></p>
     </div>
@@ -30,12 +29,13 @@
     <div class="col-md-4 offset-md-4">
         <h3> Ask a Question </h3>
         <form action="/home" method="post">
-            <p><textarea rows="2" cols="50" name="QUEST" placeholder="Your question"></textarea></p> 
+            <p><textarea rows="4" cols="50" name="QUEST" placeholder="Your question"></textarea></p> 
             <p><input type="text" size="50" name="NAME" placeholder="Your name"></p>
             <p><input type="text" size="50" name="ADRESS" placeholder="Your email"></p>
             <p><input type="date" name="DATE" placeholder="Date"></p>
             <p><input type="submit" value="Send" class="btn btn-default"></p>
         </form>
     </div>
+    
 
 </div>
