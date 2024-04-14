@@ -1,6 +1,7 @@
 from bottle import post, request, abort
 import re
 import pdb
+import json
 from datetime import datetime, date
 
 # Паттерн для проверки адреса электронной почты
@@ -20,12 +21,25 @@ def my_form():
     #Функция записи данных в словарь
     def process_form(mail,name, text):
         questions = {}        
-        # Записываем данные в словарь
-        questions[mail] = [name, text]
+        # Загрузка данных из файла, если файл существует
+        try:
+            with open('questions.json', 'r') as file:
+                questions = json.load(file)
+        except (FileNotFoundError, json.decoder.JSONDecodeError):
+            pass
+
+        # Добавление данных в словарь
+        if mail in questions:
+            if text not in questions[mail][1:]:
+                questions[mail].append(text)
+        else:
+            questions[mail] = [name, text]
         
-        # Выводим словарь для проверки
-        pdb.set_trace()  # Точка останова после вызова функции
-        return "Thanks! The answer will be sent to the mail %s" % mail
+        # Запись данных в файл JSON
+        with open('questions.json', 'w') as file:
+            json.dump(questions, file, indent=4)
+        
+        return "Thanks! The answer will be sent to the email %s" % mail
 
     # Проверяем, заполнены ли все поля формы
     if not (quest and name and mail and date_str):
