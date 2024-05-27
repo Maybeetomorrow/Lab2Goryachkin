@@ -2,6 +2,7 @@ from bottle import post, request, abort
 import re
 import pdb
 import json
+import os
 from datetime import datetime, date
 
 # Паттерн для проверки адреса электронной почты
@@ -18,27 +19,45 @@ def my_form():
     mail = request.forms.get('ADRESS')  # Получаем адрес электронной почты
     date_str = request.forms.get('DATE')    # Получаем дату в виде строки
 
-    #Функция записи данных в словарь
-    def process_form(mail,name, text):
-        questions = {}        
+    # Функция записи данных в словарь
+    def process_form(mail, name, text):
+        # Проверка наличия файла JSON и создание, если не существует
+        if not os.path.exists('questions.json'):
+            with open('questions.json', 'w') as file:
+                json.dump({}, file)
+
         # Загрузка данных из файла, если файл существует
         try:
             with open('questions.json', 'r') as file:
                 questions = json.load(file)
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
-            pass
+        except (FileNotFoundError, json.decoder.JSONDecodeError) as e:
+            print("Error loading JSON file:", e)
+            questions = {}
+
+        # Проверка корректности формата JSON файла
+        if not isinstance(questions, dict):
+            print("Invalid JSON format. Resetting data.")
+            questions = {}
 
         # Добавление данных в словарь
         if mail in questions:
             if text not in questions[mail][1:]:
                 questions[mail].append(text)
+                print("Added new answer for", mail)
+            else:
+                print("Answer already exists for", mail)
         else:
             questions[mail] = [name, text]
-        
+            print("Added new entry for", mail)
+
         # Запись данных в файл JSON
-        with open('questions.json', 'w') as file:
-            json.dump(questions, file, indent=4)
-        
+        try:
+            with open('questions.json', 'w') as file:
+                json.dump(questions, file, indent=4)
+                print("Data successfully written to JSON file.")
+        except IOError as e:
+            print("Error writing to JSON file:", e)
+
         return "Thanks! The answer will be sent to the email %s" % mail
 
     # Проверяем, заполнены ли все поля формы
